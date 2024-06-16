@@ -1,12 +1,9 @@
+package wit.projekt.Student;
+
 import java.util.ArrayList;
 import java.util.List;
-package Student;
 
 public class Student {
-
-}
-
-class Student {
     String name;
     String surname;
     String albumNumber;
@@ -59,10 +56,4 @@ class StudentRegistry {
         students.removeIf(student -> student.getAlbumNumber().equals(albumNumber));
     }
 
-}
-
-public class MainFrame {
-    public static void main(String[] args) {
-        StudentRegistry registry = new StudentRegistry();
-    }
 }

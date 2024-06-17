@@ -33,23 +33,43 @@ public class Student {
     public String getAlbumNumber() {
         return albumNumber;
     }
+
+    public ArrayList<String> getFields() {
+        ArrayList<String> fields = new ArrayList<>();
+        fields.add(name);
+        fields.add(surname);
+        fields.add(albumNumber);
+
+        return fields;
+    }
 }
 
 class StudentRegistry {
     List<Student> students = new ArrayList<>();
 
+    //TODO: add students from database
+    public StudentRegistry() {
+        students.add(new Student("Jan", "Kowalski", "123456"));
+        students.add(new Student("Adam", "Nowak", "654321"));
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
     public void addStudent(Student student) {
         students.add(student);
     }
 
-    public void editStudent(String albumNumber, String newName, String newSurname) {
+    public Student editStudent(String albumNumber, String newName, String newSurname) {
         for (Student student : students) {
             if (student.getAlbumNumber().equals(albumNumber)) {
                 student.setName(newName);
                 student.setSurname(newSurname);
-                break;
+                return student;
             }
         }
+        return null;
     }
 
     public void deleteStudent(String albumNumber) {

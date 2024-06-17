@@ -3,32 +3,49 @@ package wit.projekt.Frame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.*;
 
-
-public class PaneController {
-    List<JPanel> panels = new ArrayList<>();
-    JTabbedPane tabbedPane = new JTabbedPane();
+public class PaneController implements ActionListener {
+    private JPanel panel = new JPanel();
 
     protected PaneController(String name, String[] cols) {
-        panels.add(new JPanel());
-        int index = panels.size() - 1;
-        this.tabbedPane.addTab(name, panels.get(index));
+        JScrollPane scrollPane = createTable(cols);
+        JButton button = createButton("add", "Dodaj ucznia");
 
+        panel.add(scrollPane);
+        panel.add(button);
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+
+        Frame.addPanelToPane(name, panel);
+    }
+
+    private JScrollPane createTable(String[] cols) {
         JTable table = new JTable();
+
         DefaultTableModel model = new DefaultTableModel(cols, 0);
         table.setModel(model);
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(300, 400));
 
-        panels.get(index).add(scrollPane);
-
-        Frame.addToFrame(tabbedPane);
+        return scrollPane;
     }
 
-    protected void addRow(String[] row) {
-        DefaultTableModel model = (DefaultTableModel) ((JTable) ((JScrollPane) panels.get(0).getComponent(0)).getViewport().getView()).getModel();
-        model.addRow(row);
+    private JButton createButton(String id, String name) {
+        JButton button = new JButton(name);
+        button.setActionCommand(id);
+        button.addActionListener(this);
+
+        return button;
     }
+
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+        if (command.equals("add")) {
+
+        }
+    }
+
+
 }

@@ -6,8 +6,8 @@ public class StudentGUI extends PaneController {
 
     private StudentRegistry studentRegistry = new StudentRegistry();
 
-    public StudentGUI() {
-        super("Studenci", new String[]{"Imię", "Nazwisko", "Numer albumu"});
+    public StudentGUI(String name) {
+        super(name, new String[]{"Imię", "Nazwisko", "Numer albumu"});
     }
 
 }

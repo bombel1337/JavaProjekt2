@@ -1,13 +1,20 @@
 package wit.projekt.Student;
 
 import wit.projekt.Frame.PaneController;
+import wit.projekt.Group.GroupRegistry;
+import wit.projekt.Group.Group;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class StudentGUI extends PaneController {
 
-    private StudentRegistry studentRegistry = new StudentRegistry();
+    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
+    private GroupRegistry groupRegistry = new GroupRegistry();
 
     public StudentGUI(String name) {
-        super(name, new String[]{"name", "surname", "albumNumber"});
+        super(name, new String[]{"name", "surname", "albumNumber", "groupCode"});
 
         for (Student student : studentRegistry.getStudents()) {
             addFieldToTable(student.getFields());
@@ -23,6 +30,8 @@ public class StudentGUI extends PaneController {
                 return "Nazwisko";
             case "albumNumber":
                 return "Numer albumu";
+            case "groupCode":
+                return "Kod grupy";
             default:
                 return "";
         }
@@ -42,55 +51,78 @@ public class StudentGUI extends PaneController {
         }
     }
 
+    public void refreshTable() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0); // Usuwa wszystkie wiersze z tabeli
+        System.out.println("Refreshing table");
+        List<Student> students = studentRegistry.getStudents();
+        for (Student student : students) {
+            System.out.println("Student: " + student.getName() + " " + student.getSurname() + ", Group: " + student.getGroupCode());
+            System.out.println("Fields: " + student.getFields());
+            addFieldToTable(student.getFields());
+        }
+    }
+
     @Override
     public void actionPerformed(java.awt.event.ActionEvent e) {
         if (e.getActionCommand().equals("addButton")) {
             String name = fields.get("name").getText();
             String surname = fields.get("surname").getText();
             String albumNumber = fields.get("albumNumber").getText();
+            String groupCode = fields.get("groupCode").getText();
 
-            if (name.isEmpty()
-                    || surname.isEmpty()
-                    || albumNumber.isEmpty())
+            if (name.isEmpty() || surname.isEmpty() || albumNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
                 return;
+            }
 
             Student student = new Student(name, surname, albumNumber);
+            Group group = groupRegistry.getGroupByCode(groupCode);
+
+            if (group != null) {
+                group.addStudent(student);
+                JOptionPane.showMessageDialog(null, "Dodano studenta i przypisano do grupy: " + groupCode);
+            } else if (!groupCode.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Grupa o podanym kodzie nie istnieje");
+                return;
+            }
+
             studentRegistry.addStudent(student);
-            addFieldToTable(student.getFields());
+            refreshTable(); // Odświeża tabelę po dodaniu studenta
         }
 
         if (e.getActionCommand().equals("deleteButton")) {
-            if (selectedRow == -1)
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano ucznia do usunięcia");
                 return;
+            }
 
             String albumNumber = table.getValueAt(selectedRow, 2).toString();
-
             studentRegistry.deleteStudent(albumNumber);
             deleteRow(selectedRow);
         }
 
         if (e.getActionCommand().equals("editButton")) {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano ucznia do edycji");
+                return;
+            }
 
-
+            String albumNumber = table.getValueAt(selectedRow, 2).toString();
             String name = fields.get("name").getText();
             String surname = fields.get("surname").getText();
-            String albumNumber = table.getValueAt(selectedRow, 2).toString();
 
-            System.out.println(name + " " + surname + " " + albumNumber);
-
-            if (name.isEmpty()
-                    || surname.isEmpty()
-                    || albumNumber.isEmpty())
+            if (name.isEmpty() || surname.isEmpty() || albumNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
                 return;
+            }
 
             Student student = studentRegistry.editStudent(albumNumber, name, surname);
 
             if (student == null)
                 return;
 
-            System.out.println(student.getName() + " " + student.getSurname() + " " + student.getAlbumNumber());
-
-            editRow(student.getFields(), selectedRow);
+            refreshTable(); // Odświeża tabelę po edycji studenta
         }
     }
 }

@@ -7,11 +7,15 @@ import java.util.Map;
 
 public class Subject {
     String name;
-    Map<String, Integer> assessmentCriteria;
+    Integer thirdGrade;
+    Integer fourthGrade;
+    Integer fithGrade;
 
-    public Subject(String name) {
+    public Subject(String name, Integer thirdGrade, Integer fourthGrade, Integer fithGrade) {
         this.name = name;
-        this.assessmentCriteria = new HashMap<>();
+        this.thirdGrade = thirdGrade;
+        this.fourthGrade = thirdGrade + fourthGrade;
+        this.fithGrade = thirdGrade + fourthGrade + fithGrade;
     }
 
     public String getName() {
@@ -22,24 +26,40 @@ public class Subject {
         this.name = name;
     }
 
-    public void addCriterion(String criterion, int maxPoints) {
-        assessmentCriteria.put(criterion, maxPoints);
-    }
-
-    public void editCriterion(String criterion, int newMaxPoints) {
-        if (assessmentCriteria.containsKey(criterion)) {
-            assessmentCriteria.put(criterion, newMaxPoints);
+    public void editCriterion(String grade, int newMaxPoints) {
+        switch (grade) {
+            case "Third":
+                thirdGrade = newMaxPoints;
+                break;
+            case "Fourth":
+                fourthGrade = newMaxPoints;
+                break;
+            case "Fith":
+                fithGrade = newMaxPoints;
+                break;
         }
     }
 
-    public void removeCriterion(String criterion) {
-        assessmentCriteria.remove(criterion);
+    public void removeCriterion(String grade) {
+        switch (grade) {
+            case "Third":
+                thirdGrade = 0;
+                break;
+            case "Fourth":
+                fourthGrade = 0;
+                break;
+            case "Fith":
+                fithGrade = 0;
+                break;
+        }
     }
 
     public ArrayList<String> getFields() {
         ArrayList<String> fields = new ArrayList<>();
         fields.add(name);
-        fields.add(assessmentCriteria.toString());
+        fields.add(thirdGrade.toString());
+        fields.add(fourthGrade.toString());
+        fields.add(fithGrade.toString());
         return fields;
     }
 }
@@ -49,14 +69,10 @@ class SubjectRegistry {
 
     // TODO: add subjects from database
     public SubjectRegistry() {
-        Subject java = new Subject("Java Language");
-        java.addCriterion("Exam", 100);
-        java.addCriterion("Project", 50);
+        Subject java = new Subject("Java Language", 50, 30, 10);
         subjects.add(java);
 
-        Subject math = new Subject("Mathematics");
-        math.addCriterion("Colloquium", 70);
-        math.addCriterion("Exercises", 30);
+        Subject math = new Subject("Mathematics", 40, 30, 20);
         subjects.add(math);
     }
 
@@ -68,10 +84,13 @@ class SubjectRegistry {
         subjects.add(subject);
     }
 
-    public Subject editSubject(String name, String newName) {
+    public Subject editSubject(String name, String newName, int newThirdGrade, int newFourthGrade, int newFithGrade) {
         for (Subject subject : subjects) {
             if (subject.getName().equals(name)) {
                 subject.setName(newName);
+                subject.editCriterion("Third", newThirdGrade);
+                subject.editCriterion("Fourth", newThirdGrade + newFourthGrade + newFourthGrade);
+                subject.editCriterion("Fith", newThirdGrade + newFourthGrade + newFithGrade);
                 return subject;
             }
         }

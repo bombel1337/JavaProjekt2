@@ -2,12 +2,14 @@ package wit.projekt.Subject;
 
 import wit.projekt.Frame.PaneController;
 
+import javax.swing.*;
+
 public class SubjectGUI extends PaneController {
 
     private SubjectRegistry subjectRegistry = new SubjectRegistry();
 
     public SubjectGUI(String name) {
-        super(name, new String[] { "name", "assessmentCriteria" });
+        super(name, new String[] { "name", "thirdGrade", "fourthGrade", "fithGrade" });
 
         for (Subject subject : subjectRegistry.getSubjects()) {
             addFieldToTable(subject.getFields());
@@ -18,9 +20,13 @@ public class SubjectGUI extends PaneController {
     protected String getFieldNameFromID(String id) {
         switch (id) {
             case "name":
-                return "Name";
-            case "assessmentCriteria":
-                return "Assessment Criteria";
+                return "Nazwa przedmiotu";
+            case "thirdGrade":
+                return "Ocena 3";
+            case "fourthGrade":
+                return "Ocena 4";
+            case "fithGrade":
+                return "Ocena 5";
             default:
                 return "";
         }
@@ -30,11 +36,11 @@ public class SubjectGUI extends PaneController {
     protected String getButtonNamesFromID(String id) {
         switch (id) {
             case "addButton":
-                return "Add Subject";
+                return "Dodaj przedmiot";
             case "deleteButton":
-                return "Delete Subject";
+                return "Usuń przedmiot";
             case "editButton":
-                return "Edit Subject";
+                return "Edytuj przedmiot";
             default:
                 return "";
         }
@@ -44,20 +50,27 @@ public class SubjectGUI extends PaneController {
     public void actionPerformed(java.awt.event.ActionEvent e) {
         if (e.getActionCommand().equals("addButton")) {
             String name = fields.get("name").getText();
-            String criteria = fields.get("assessmentCriteria").getText();
+            String thirdGrade = fields.get("thirdGrade").getText();
+            String fourthGrade = fields.get("fourthGrade").getText();
+            String fifthGrade = fields.get("fithGrade").getText();
 
-            if (name.isEmpty() || criteria.isEmpty())
+            if (name.isEmpty() || thirdGrade.isEmpty() || fourthGrade.isEmpty() || fifthGrade.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
                 return;
+            }
 
-            Subject subject = new Subject(name);
+            Subject subject = new Subject(name, Integer.parseInt(thirdGrade), Integer.parseInt(fourthGrade),
+                    Integer.parseInt(fifthGrade));
             // Add logic to parse and add criteria
             subjectRegistry.addSubject(subject);
             addFieldToTable(subject.getFields());
         }
 
         if (e.getActionCommand().equals("deleteButton")) {
-            if (selectedRow == -1)
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano grupy do usunięcia");
                 return;
+            }
 
             String name = table.getValueAt(selectedRow, 0).toString();
 
@@ -66,17 +79,24 @@ public class SubjectGUI extends PaneController {
         }
 
         if (e.getActionCommand().equals("editButton")) {
-            if (selectedRow == -1)
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano grupy do usunięcia");
                 return;
+            }
 
             String name = fields.get("name").getText();
-            String criteria = fields.get("assessmentCriteria").getText();
+            String thirdGrade = fields.get("thirdGrade").getText();
+            String fourthGrade = fields.get("fourthGrade").getText();
+            String fifthGrade = fields.get("fithGrade").getText();
             String originalName = table.getValueAt(selectedRow, 0).toString();
 
-            if (name.isEmpty() || criteria.isEmpty())
+            if (name.isEmpty() || thirdGrade.isEmpty() || fourthGrade.isEmpty() || fifthGrade.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
                 return;
+            }
 
-            Subject subject = subjectRegistry.editSubject(originalName, name);
+            Subject subject = subjectRegistry.editSubject(originalName, name, Integer.parseInt(thirdGrade),
+                    Integer.parseInt(fourthGrade), Integer.parseInt(fifthGrade));
 
             if (subject == null)
                 return;

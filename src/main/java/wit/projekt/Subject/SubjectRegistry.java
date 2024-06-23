@@ -1,26 +1,14 @@
 package wit.projekt.Subject;
 
-import wit.projekt.Database.Database;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SubjectRegistry {
-    List<Subject> subjects = new ArrayList<>();
+    private List<Subject> subjects = new ArrayList<>();
 
-    // TODO: add subjects from database
-    public SubjectRegistry(List<String> data) {
-        if (data.size() > 0) {
-            for (int i = 0; i < data.size(); i += 4) {
-                subjects.add(new Subject(data.get(i), Integer.parseInt(data.get(i + 1)), Integer.parseInt(data.get(i + 2)), Integer.parseInt(data.get(i + 3))));
-            }
-        }
-
-        //Subject java = new Subject("Java Language", 50, 30, 10);
-        //subjects.add(java);
-
-        //Subject math = new Subject("Mathematics", 40, 30, 20);
-        //subjects.add(math);
+    public SubjectRegistry() {
+        subjects.add(new Subject("JAVA", "Java Language"));
+        subjects.add(new Subject("MATH", "Mathematics"));
     }
 
     public List<Subject> getSubjects() {
@@ -31,41 +19,16 @@ public class SubjectRegistry {
         subjects.add(subject);
     }
 
-    public Subject editSubject(String name, String newName, int newThirdGrade, int newFourthGrade, int newFithGrade) {
+    public void deleteSubject(String code) {
+        subjects.removeIf(subject -> subject.getCode().equals(code));
+    }
+
+    public void editSubject(String code, String newName) {
         for (Subject subject : subjects) {
-            if (subject.getName().equals(name)) {
+            if (subject.getCode().equals(code)) {
                 subject.setName(newName);
-                subject.editCriterion("Third", newThirdGrade);
-                subject.editCriterion("Fourth", newThirdGrade + newFourthGrade + newFourthGrade);
-                subject.editCriterion("Fith", newThirdGrade + newFourthGrade + newFithGrade);
-                return subject;
+                break;
             }
         }
-        return null;
-    }
-
-    public void deleteSubject(String name) {
-        subjects.removeIf(subject -> subject.getName().equals(name));
-    }
-
-    public void saveDataToDB() {
-        List<String> data = new ArrayList<>();
-        for (Subject subject : subjects) {
-            data.add(subject.getName());
-            data.add(subject.getGrade("Third").toString());
-            data.add(subject.getGrade("Fourth").toString());
-            data.add(subject.getGrade("Fith").toString());
-        }
-        Database.save("subjects", data);
-    }
-
-    public Subject getSubjectByName(String name) {
-        for (Subject subject : subjects) {
-            if (subject.getName().equals(name)) {
-                return subject;
-            }
-        }
-        return null;
     }
 }
-

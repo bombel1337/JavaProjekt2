@@ -2,11 +2,10 @@ package wit.projekt.Group;
 
 import wit.projekt.Frame.PaneController;
 import wit.projekt.Student.Student;
-import wit.projekt.Student.StudentGUI;
 import wit.projekt.Student.StudentRegistry;
+import wit.projekt.Student.StudentGUI;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class GroupGUI extends PaneController {
@@ -25,13 +24,31 @@ public class GroupGUI extends PaneController {
             addFieldToTable(group.getFields());
         }
 
+        fields.put("groupCode", new JTextField(10));
+        fields.put("specialization", new JTextField(10));
+        fields.put("description", new JTextField(10));
         fields.put("studentAlbumNumber", addField("Numer albumu studenta"));
 
-        JButton assignButton = createButton("assignButton", getButtonNamesFromID("assignButton"));
-        buttonPanel.add(assignButton);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
-        JButton unassignButton = createButton("unassignButton", getButtonNamesFromID("unassignButton"));
-        buttonPanel.add(unassignButton);
+        buttonPanel.add(new JLabel("Kod grupy:"));
+        buttonPanel.add(fields.get("groupCode"));
+        buttonPanel.add(new JLabel("Specjalizacja:"));
+        buttonPanel.add(fields.get("specialization"));
+        buttonPanel.add(new JLabel("Opis:"));
+        buttonPanel.add(fields.get("description"));
+
+        JButton assignButton = createButton("assignButton", "Przypisz studenta");
+        fieldPanel.add(assignButton);
+
+        JButton unassignButton = createButton("unassignButton", "Usuń przypisanie");
+        fieldPanel.add(unassignButton);
+
+        JButton addButton = createButton("addButton", "Dodaj grupę");
+        buttonPanel.add(addButton);
+
+        JButton deleteButton = createButton("deleteButton", "Usuń grupę");
+        buttonPanel.add(deleteButton);
     }
 
     @Override
@@ -57,8 +74,6 @@ public class GroupGUI extends PaneController {
                 return "Dodaj grupę";
             case "deleteButton":
                 return "Usuń grupę";
-            case "editButton":
-                return "Edytuj grupę";
             case "assignButton":
                 return "Przypisz studenta";
             case "unassignButton":
@@ -68,6 +83,10 @@ public class GroupGUI extends PaneController {
             default:
                 return "";
         }
+    }
+
+    public JPanel getPanel() {
+        return this;
     }
 
     @Override
@@ -98,29 +117,6 @@ public class GroupGUI extends PaneController {
             deleteRow(selectedRow);
         }
 
-        if (e.getActionCommand().equals("editButton")) {
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(null, "Nie wybrano grupy do edycji");
-                return;
-            }
-
-            String groupCode = table.getValueAt(selectedRow, 0).toString();
-            String specialization = fields.get("specialization").getText();
-            String description = fields.get("description").getText();
-
-            if (groupCode.isEmpty() || specialization.isEmpty() || description.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
-                return;
-            }
-
-            Group group = groupRegistry.editGroup(groupCode, specialization, description);
-
-            if (group == null)
-                return;
-
-            editRow(group.getFields(), selectedRow);
-        }
-
         if (e.getActionCommand().equals("assignButton")) {
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(null, "Nie wybrano grupy do przypisania studenta");
@@ -139,17 +135,10 @@ public class GroupGUI extends PaneController {
             Student student = studentRegistry.getStudentByAlbumNumber(studentAlbumNumber);
 
             if (group != null && student != null) {
-                System.out
-                        .println("Assigning student " + student.getAlbumNumber() + " to group " + group.getGroupCode());
                 group.addStudent(student);
                 studentRegistry.assignGroupToStudent(student, group);
-                System.out.println("After assignment in GroupGUI:");
-                for (Student s : studentRegistry.getStudents()) {
-                    System.out.println(s.getFields());
-                }
-                JOptionPane.showMessageDialog(null, "Przypisano studenta: " + student.getName() + " "
-                        + student.getSurname() + " do grupy " + group.getGroupCode());
-                studentGUI.refreshTable(); // Odświeżenie tabeli studentów po przypisaniu
+                JOptionPane.showMessageDialog(null, "Przypisano studenta: " + student.getName() + " " + student.getSurname() + " do grupy " + group.getGroupCode());
+                studentGUI.refreshTable();
             } else {
                 JOptionPane.showMessageDialog(null, "Nie znaleziono grupy lub studenta");
             }
@@ -173,13 +162,10 @@ public class GroupGUI extends PaneController {
             Student student = studentRegistry.getStudentByAlbumNumber(studentAlbumNumber);
 
             if (group != null && student != null) {
-                System.out.println(
-                        "Unassigning student " + student.getAlbumNumber() + " from group " + group.getGroupCode());
                 group.removeStudent(student);
                 studentRegistry.assignGroupToStudent(student, null);
-                JOptionPane.showMessageDialog(null, "Usunięto przypisanie studenta: " + student.getName() + " "
-                        + student.getSurname() + " z grupy " + group.getGroupCode());
-                studentGUI.refreshTable(); // Odświeżenie tabeli studentów po usunięciu przypisania
+                JOptionPane.showMessageDialog(null, "Usunięto przypisanie studenta: " + student.getName() + " " + student.getSurname() + " z grupy " + group.getGroupCode());
+                studentGUI.refreshTable();
             } else {
                 JOptionPane.showMessageDialog(null, "Nie znaleziono grupy lub studenta");
             }

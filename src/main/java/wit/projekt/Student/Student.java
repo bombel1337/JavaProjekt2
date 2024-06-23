@@ -1,7 +1,7 @@
 package wit.projekt.Student;
 
-import wit.projekt.Group.Group;
 import java.util.ArrayList;
+import wit.projekt.Group.Group;
 
 public class Student {
     private String name;
@@ -48,8 +48,8 @@ public class Student {
         return group != null ? group.getGroupCode() : "Brak grupy";
     }
 
-    public ArrayList<String> getFields() {
-        ArrayList<String> fields = new ArrayList<>();
+    public ArrayList<Object> getFields() {
+        ArrayList<Object> fields = new ArrayList<>();
         fields.add(name);
         fields.add(surname);
         fields.add(albumNumber);

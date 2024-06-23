@@ -1,7 +1,8 @@
 package wit.projekt;
 
 import wit.projekt.Frame.Frame;
-import wit.projekt.Student.*;
+import wit.projekt.Student.StudentGUI;
+import wit.projekt.Group.GroupGUI;
 
 import javax.swing.*;
 
@@ -12,10 +13,9 @@ public class Main {
             public void run() {
                 new Frame();
 
-                //studentRegistry.addStudent(new Student("Jan", "Kowalski", "123456"));
+                StudentGUI studentGUI = new StudentGUI("STUDENTS");
+                GroupGUI groupGUI = new GroupGUI("GROUPS", studentGUI);
 
-                StudentGUI studentGUI = new StudentGUI("studa");
-                StudentGUI studentGUI2 = new StudentGUI("stude");
             }
         });
     }

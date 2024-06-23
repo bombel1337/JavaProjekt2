@@ -1,26 +1,22 @@
 package wit.projekt.Frame;
 
-import wit.projekt.Student.Student;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.List;
 
 public abstract class PaneController implements ActionListener {
     private JPanel panel = new JPanel();
 
     private JPanel fieldPanel = new JPanel();
+    protected JPanel buttonPanel = new JPanel();
     private JPanel tablePanel = new JPanel();
-    private JPanel buttonPanel = new JPanel();
 
     protected JTable table = new JTable();
     protected int selectedRow = -1;
     protected HashMap<String, JTextField> fields = new HashMap<>();
 
-    //TODO: for now hardcoded, should be dynamic based on class fields
     protected PaneController(String name, String[] cols) {
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = createTable(cols);
@@ -37,9 +33,10 @@ public abstract class PaneController implements ActionListener {
 
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.Y_AXIS));
 
-        fields.put(cols[0], addField(getFieldNameFromID(cols[0])));
-        fields.put(cols[1], addField(getFieldNameFromID(cols[1])));
-        fields.put(cols[2], addField(getFieldNameFromID(cols[2])));
+        for (String col : cols) {
+            fields.put(col, addField(getFieldNameFromID(col)));
+        }
+
         JButton addButton = createButton("addButton", getButtonNamesFromID("addButton"));
         fieldPanel.add(addButton);
 
@@ -52,7 +49,10 @@ public abstract class PaneController implements ActionListener {
     }
 
     private JScrollPane createTable(String[] cols) {
-        String[] labels = {getFieldNameFromID(cols[0]), getFieldNameFromID(cols[1]), getFieldNameFromID(cols[2])};
+        String[] labels = new String[cols.length];
+        for (int i = 0; i < cols.length; i++) {
+            labels[i] = getFieldNameFromID(cols[i]);
+        }
 
         DefaultTableModel model = new DefaultTableModel(labels, 0);
         table.setModel(model);
@@ -63,7 +63,7 @@ public abstract class PaneController implements ActionListener {
         });
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(300, 400));
+        scrollPane.setPreferredSize(new Dimension(400, 400));
 
         return scrollPane;
     }
@@ -73,22 +73,19 @@ public abstract class PaneController implements ActionListener {
         model.addRow(fields.toArray());
     }
 
-    private JButton createButton(String id, String name) {
+    protected JButton createButton(String id, String name) {
         JButton button = new JButton(name);
         button.setActionCommand(id);
         button.addActionListener(this);
-
         return button;
     }
 
-    private JTextField addField(String name) {
+    protected JTextField addField(String name) {
         JLabel label = new JLabel(name);
         fieldPanel.add(label);
 
         JTextField textField = new JTextField(20);
         fieldPanel.add(textField);
-        //textField.setActionCommand(id);
-
         return textField;
     }
 
@@ -108,5 +105,4 @@ public abstract class PaneController implements ActionListener {
     protected abstract String getButtonNamesFromID(String id);
 
     public abstract void actionPerformed(ActionEvent e);
-
 }

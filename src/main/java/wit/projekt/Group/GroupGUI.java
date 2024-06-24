@@ -49,6 +49,12 @@ public class GroupGUI extends PaneController {
 
         JButton deleteButton = createButton("deleteButton", "Usuń grupę");
         buttonPanel.add(deleteButton);
+
+        JButton editButton = createButton("editButton", "Edytuj grupę");
+        buttonPanel.add(editButton);
+
+        JButton searchButton = createButton("searchButton", "Szukaj ucznia");
+        buttonPanel.add(searchButton);
     }
 
     @Override
@@ -60,8 +66,6 @@ public class GroupGUI extends PaneController {
                 return "Specjalizacja";
             case "description":
                 return "Opis";
-            case "studentAlbumNumber":
-                return "Numer albumu studenta";
             default:
                 return "";
         }
@@ -169,6 +173,29 @@ public class GroupGUI extends PaneController {
             } else {
                 JOptionPane.showMessageDialog(null, "Nie znaleziono grupy lub studenta");
             }
+        }
+
+        if (e.getActionCommand().equals("editButton")) {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano grupy do edycji");
+                return;
+            }
+
+            String oldGroupCode = table.getValueAt(selectedRow, 0).toString();
+
+            String groupCode = fields.get("groupCode").getText();
+            String specialization = fields.get("specialization").getText();
+            String description = fields.get("description").getText();
+
+            if (groupCode.isEmpty() || specialization.isEmpty() || description.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
+                return;
+            }
+
+            Group group = new Group(groupCode, specialization, description);
+
+            groupRegistry.editGroup(oldGroupCode, group);
+            editRow(group.getFields(), selectedRow);
         }
 
         if (e.getActionCommand().equals("searchButton")) {

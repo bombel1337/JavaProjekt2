@@ -12,12 +12,14 @@ import java.util.List;
 
 public class StudentGUI extends PaneController {
 
-    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
-    private GroupRegistry groupRegistry = new GroupRegistry();
-    private SubjectRegistry subjectRegistry = new SubjectRegistry();
+    private StudentRegistry studentRegistry;
+    private GroupRegistry groupRegistry;
 
-    public StudentGUI(String name) {
+    public StudentGUI(String name, StudentRegistry studentRegistry, GroupRegistry groupRegistry, SubjectRegistry subjectRegistry) {
         super(name, new String[]{"name", "surname", "albumNumber", "group"});
+
+        this.studentRegistry = studentRegistry;
+        this.groupRegistry = groupRegistry;
 
         List<Subject> subjects = subjectRegistry.getSubjects();
         for (Subject subject : subjects) {
@@ -49,6 +51,12 @@ public class StudentGUI extends PaneController {
 
         JButton deleteButton = createButton("deleteButton", "Usuń ucznia");
         buttonPanel.add(deleteButton);
+
+        JButton editButton = createButton("editButton", "Edytuj ucznia");
+        buttonPanel.add(editButton);
+
+        JButton searchButton = createButton("searchButton", "Szukaj ucznia");
+        buttonPanel.add(searchButton);
     }
 
     @Override
@@ -118,6 +126,35 @@ public class StudentGUI extends PaneController {
             String albumNumber = table.getValueAt(selectedRow, 2).toString();
             studentRegistry.deleteStudent(albumNumber);
             deleteRow(selectedRow);
+        }
+
+        if (e.getActionCommand().equals(("editButton"))) {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano ucznia do edycji");
+                return;
+            }
+
+            String oldAlbumNumber = table.getValueAt(selectedRow, 2).toString();
+
+            String name = fields.get("name").getText();
+            String surname = fields.get("surname").getText();
+            String albumNumber = fields.get("albumNumber").getText();
+            String groupCode = fields.get("group").getText();
+
+            if (name.isEmpty() || surname.isEmpty() || albumNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
+                return;
+            }
+
+            Student student = new Student(name, surname, albumNumber);
+            Group group = groupRegistry.getGroupByCode(groupCode);
+
+            if (group != null) {
+                group.addStudent(student);
+            }
+
+            studentRegistry.editStudent(oldAlbumNumber, student);
+            editRow(student.getFields(), selectedRow);
         }
 
         if (e.getActionCommand().equals("searchButton")) {

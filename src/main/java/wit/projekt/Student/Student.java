@@ -32,6 +32,10 @@ public class Student {
         this.surname = surname;
     }
 
+    public void setAlbumNumber(String albumNumber) {
+        this.albumNumber = albumNumber;
+    }
+
     public String getAlbumNumber() {
         return albumNumber;
     }

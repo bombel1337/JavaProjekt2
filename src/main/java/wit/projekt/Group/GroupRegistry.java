@@ -26,11 +26,11 @@ public class GroupRegistry {
         groups.add(group);
     }
 
-    public Group editGroup(String groupCode, String newSpecialization, String newDescription) {
+    public Group editGroup(String groupCode, Group newGroup) {
         for (Group group : groups) {
             if (group.getGroupCode().equals(groupCode)) {
-                group.setSpecialization(newSpecialization);
-                group.setDescription(newDescription);
+                deleteGroup(groupCode);
+                groups.add(newGroup);
                 return group;
             }
         }

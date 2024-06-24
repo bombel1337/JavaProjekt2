@@ -30,13 +30,15 @@ public class StudentRegistry {
         JOptionPane.showMessageDialog(null, "Dodano studenta: " + student.getName() + " " + student.getSurname());
     }
 
-    public Student editStudent(String albumNumber, String newName, String newSurname) {
+    public Student editStudent(String albumNumber, Student newStudent) {
         for (Student student : students) {
             if (student.getAlbumNumber().equals(albumNumber)) {
-                student.setName(newName);
-                student.setSurname(newSurname);
+                deleteStudent(albumNumber);
+                students.add(newStudent);
+
                 JOptionPane.showMessageDialog(null,
-                        "Zaktualizowano dane studenta: " + student.getName() + " " + student.getSurname());
+                        "Zaktualizowano dane studenta: " + student.getName() + " " + student.getSurname() + " "
+                                + student.getAlbumNumber());
                 return student;
             }
         }
@@ -80,8 +82,8 @@ public class StudentRegistry {
             data.add(student.getName());
             data.add(student.getSurname());
             data.add(student.getAlbumNumber());
+            data.add(student.getGroupCode());
         }
-
         Database.save("students", data);
     }
 }

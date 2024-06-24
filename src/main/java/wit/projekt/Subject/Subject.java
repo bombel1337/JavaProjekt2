@@ -1,9 +1,7 @@
 package wit.projekt.Subject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Subject {
     String name;
@@ -14,8 +12,8 @@ public class Subject {
     public Subject(String name, Integer thirdGrade, Integer fourthGrade, Integer fithGrade) {
         this.name = name;
         this.thirdGrade = thirdGrade;
-        this.fourthGrade = thirdGrade + fourthGrade;
-        this.fithGrade = thirdGrade + fourthGrade + fithGrade;
+        this.fourthGrade = fourthGrade;
+        this.fithGrade = fithGrade;
     }
 
     public String getName() {
@@ -62,6 +60,18 @@ public class Subject {
         fields.add(fithGrade.toString());
         return fields;
     }
+
+    public int getThirdGrade() {
+        return thirdGrade;
+    }
+
+    public int getFourthGrade() {
+        return fourthGrade;
+    }
+
+    public int getFifthGrade() {
+        return fithGrade;
+    }
 }
 
 class SubjectRegistry {
@@ -89,8 +99,8 @@ class SubjectRegistry {
             if (subject.getName().equals(name)) {
                 subject.setName(newName);
                 subject.editCriterion("Third", newThirdGrade);
-                subject.editCriterion("Fourth", newThirdGrade + newFourthGrade + newFourthGrade);
-                subject.editCriterion("Fith", newThirdGrade + newFourthGrade + newFithGrade);
+                subject.editCriterion("Fourth", newFourthGrade);
+                subject.editCriterion("Fith", newFithGrade);
                 return subject;
             }
         }
@@ -99,5 +109,14 @@ class SubjectRegistry {
 
     public void deleteSubject(String name) {
         subjects.removeIf(subject -> subject.getName().equals(name));
+    }
+
+    public Subject getSubjectByName(String name) {
+        for (Subject subject : subjects) {
+            if (subject.getName().equals(name)) {
+                return subject;
+            }
+        }
+        return null;
     }
 }

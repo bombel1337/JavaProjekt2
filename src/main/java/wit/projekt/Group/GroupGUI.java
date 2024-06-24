@@ -16,7 +16,7 @@ public class GroupGUI extends PaneController {
     private StudentGUI studentGUI;
 
     public GroupGUI(String name, StudentGUI studentGUI) {
-        super(name, new String[]{"groupCode", "specialization", "description"});
+        super(name, new String[] { "groupCode", "specialization", "description" });
         this.studentGUI = studentGUI;
 
         for (Group group : groupRegistry.getGroups()) {
@@ -61,6 +61,8 @@ public class GroupGUI extends PaneController {
                 return "Przypisz studenta";
             case "unassignButton":
                 return "Usuń przypisanie";
+            case "searchButton":
+                return "Szukaj grupę";
             default:
                 return "";
         }
@@ -135,14 +137,16 @@ public class GroupGUI extends PaneController {
             Student student = studentRegistry.getStudentByAlbumNumber(studentAlbumNumber);
 
             if (group != null && student != null) {
-                System.out.println("Assigning student " + student.getAlbumNumber() + " to group " + group.getGroupCode());
+                System.out
+                        .println("Assigning student " + student.getAlbumNumber() + " to group " + group.getGroupCode());
                 group.addStudent(student);
                 studentRegistry.assignGroupToStudent(student, group);
                 System.out.println("After assignment in GroupGUI:");
                 for (Student s : studentRegistry.getStudents()) {
                     System.out.println(s.getFields());
                 }
-                JOptionPane.showMessageDialog(null, "Przypisano studenta: " + student.getName() + " " + student.getSurname() + " do grupy " + group.getGroupCode());
+                JOptionPane.showMessageDialog(null, "Przypisano studenta: " + student.getName() + " "
+                        + student.getSurname() + " do grupy " + group.getGroupCode());
                 studentGUI.refreshTable(); // Odświeżenie tabeli studentów po przypisaniu
             } else {
                 JOptionPane.showMessageDialog(null, "Nie znaleziono grupy lub studenta");
@@ -167,14 +171,40 @@ public class GroupGUI extends PaneController {
             Student student = studentRegistry.getStudentByAlbumNumber(studentAlbumNumber);
 
             if (group != null && student != null) {
-                System.out.println("Unassigning student " + student.getAlbumNumber() + " from group " + group.getGroupCode());
+                System.out.println(
+                        "Unassigning student " + student.getAlbumNumber() + " from group " + group.getGroupCode());
                 group.removeStudent(student);
                 studentRegistry.assignGroupToStudent(student, null);
-                JOptionPane.showMessageDialog(null, "Usunięto przypisanie studenta: " + student.getName() + " " + student.getSurname() + " z grupy " + group.getGroupCode());
+                JOptionPane.showMessageDialog(null, "Usunięto przypisanie studenta: " + student.getName() + " "
+                        + student.getSurname() + " z grupy " + group.getGroupCode());
                 studentGUI.refreshTable(); // Odświeżenie tabeli studentów po usunięciu przypisania
             } else {
                 JOptionPane.showMessageDialog(null, "Nie znaleziono grupy lub studenta");
             }
+        }
+
+        if (e.getActionCommand().equals("searchButton")) {
+            String groupCode = fields.get("groupCode").getText();
+            if (!groupCode.isEmpty()) {
+                searchGroup(groupCode);
+            } else {
+                JOptionPane.showMessageDialog(null, "Wprowadź nazwę grupy do wyszukania.");
+            }
+        }
+
+    }
+
+    private void searchGroup(String groupCode) {
+        Group group = groupRegistry.getGroupByCode(groupCode);
+
+        if (group == null) {
+            JOptionPane.showMessageDialog(null, "Nie znaleziono grupy o nazwie: " + groupCode);
+            return;
+        } else {
+            JOptionPane.showMessageDialog(null, "Znaleziono grupę:\n" +
+                    "Nazwa: " + group.getGroupCode() + "\n" +
+                    "Specjalizacja: " + group.getSpecialization() + "\n" +
+                    "Opis: " + group.getDescription());
         }
     }
 }

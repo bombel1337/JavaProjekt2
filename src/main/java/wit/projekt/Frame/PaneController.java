@@ -33,6 +33,9 @@ public abstract class PaneController implements ActionListener {
 
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.Y_AXIS));
 
+        JButton searchButton = createButton("searchButton", getButtonNamesFromID("searchButton"));
+        fieldPanel.add(searchButton);
+
         for (String col : cols) {
             fields.put(col, addField(getFieldNameFromID(col)));
         }

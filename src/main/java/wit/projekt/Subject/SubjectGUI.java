@@ -41,6 +41,8 @@ public class SubjectGUI extends PaneController {
                 return "Usuń przedmiot";
             case "editButton":
                 return "Edytuj przedmiot";
+            case "searchButton":
+                return "Szukaj przedmiotu";
             default:
                 return "";
         }
@@ -103,6 +105,29 @@ public class SubjectGUI extends PaneController {
 
             // Update criteria logic
             editRow(subject.getFields(), selectedRow);
+        }
+
+        if (e.getActionCommand().equals("searchButton")) {
+            String name = fields.get("name").getText();
+            if (!name.isEmpty()) {
+                searchSubject(name);
+            } else {
+                JOptionPane.showMessageDialog(null, "Wprowadź nazwę przedmiotu do wyszukania.");
+            }
+        }
+    }
+
+    public void searchSubject(String name) {
+        Subject subject = subjectRegistry.getSubjectByName(name);
+        if (subject != null) {
+            JOptionPane.showMessageDialog(null, "Znaleziono przedmiot:\n" +
+                    "Nazwa: " + subject.getName() + "\n" +
+                    "Ocena 3: " + subject.getThirdGrade() + " pkt" + "\n" +
+                    "Ocena 4: " + subject.getFourthGrade() + " pkt" + "\n" +
+                    "Ocena 5: " + subject.getFifthGrade() + " pkt");
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Nie znaleziono przedmiotu o nazwie: " + name);
         }
     }
 }

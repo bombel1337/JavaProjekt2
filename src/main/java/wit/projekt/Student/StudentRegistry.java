@@ -37,7 +37,8 @@ public class StudentRegistry {
             if (student.getAlbumNumber().equals(albumNumber)) {
                 student.setName(newName);
                 student.setSurname(newSurname);
-                JOptionPane.showMessageDialog(null, "Zaktualizowano dane studenta: " + student.getName() + " " + student.getSurname());
+                JOptionPane.showMessageDialog(null,
+                        "Zaktualizowano dane studenta: " + student.getName() + " " + student.getSurname());
                 return student;
             }
         }
@@ -58,12 +59,14 @@ public class StudentRegistry {
     }
 
     public void assignGroupToStudent(Student student, Group group) {
-        System.out.println("Assigning group " + (group != null ? group.getGroupCode() : "null") + " to student " + student.getAlbumNumber());
+        System.out.println("Assigning group " + (group != null ? group.getGroupCode() : "null") + " to student "
+                + student.getAlbumNumber());
         for (Student s : students) {
             if (s.getAlbumNumber().equals(student.getAlbumNumber())) {
                 s.setGroup(group);
                 System.out.println("Student " + s.getAlbumNumber() + " group set to " + s.getGroupCode());
-                JOptionPane.showMessageDialog(null, "Zaktualizowano grupę studenta: " + s.getName() + " " + s.getSurname() + " na grupę " + (group != null ? group.getGroupCode() : "Brak grupy"));
+                JOptionPane.showMessageDialog(null, "Zaktualizowano grupę studenta: " + s.getName() + " "
+                        + s.getSurname() + " na grupę " + (group != null ? group.getGroupCode() : "Brak grupy"));
                 break;
             }
         }

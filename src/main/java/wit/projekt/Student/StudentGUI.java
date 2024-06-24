@@ -4,17 +4,18 @@ import wit.projekt.Frame.PaneController;
 import wit.projekt.Group.GroupRegistry;
 import wit.projekt.Group.Group;
 
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class StudentGUI extends PaneController {
-
     private StudentRegistry studentRegistry = StudentRegistry.getInstance();
     private GroupRegistry groupRegistry = new GroupRegistry();
 
     public StudentGUI(String name) {
-        super(name, new String[]{"name", "surname", "albumNumber", "groupCode"});
+        super(name, new String[] { "name", "surname", "albumNumber", "groupCode" });
 
         for (Student student : studentRegistry.getStudents()) {
             addFieldToTable(student.getFields());
@@ -46,6 +47,8 @@ public class StudentGUI extends PaneController {
                 return "Usuń ucznia";
             case "editButton":
                 return "Edytuj ucznia";
+            case "searchButton":
+                return "Szukaj ucznia";
             default:
                 return "";
         }
@@ -57,7 +60,8 @@ public class StudentGUI extends PaneController {
         System.out.println("Refreshing table");
         List<Student> students = studentRegistry.getStudents();
         for (Student student : students) {
-            System.out.println("Student: " + student.getName() + " " + student.getSurname() + ", Group: " + student.getGroupCode());
+            System.out.println("Student: " + student.getName() + " " + student.getSurname() + ", Group: "
+                    + student.getGroupCode());
             System.out.println("Fields: " + student.getFields());
             addFieldToTable(student.getFields());
         }
@@ -124,5 +128,31 @@ public class StudentGUI extends PaneController {
 
             refreshTable(); // Odświeża tabelę po edycji studenta
         }
+
+        if (e.getActionCommand().equals("searchButton")) {
+            String albumNumber = fields.get("albumNumber").getText();
+            if (!albumNumber.isEmpty()) {
+                searchStudent(albumNumber);
+            } else {
+                JOptionPane.showMessageDialog(null, "Wprowadź numer albumu studenta do wyszukania.");
+            }
+        }
+
     }
+
+    public void searchStudent(String albumNumber) {
+        Student student = studentRegistry.getStudentByAlbumNumber(albumNumber);
+
+        if (student == null) {
+            JOptionPane.showMessageDialog(null, "Nie znaleziono studenta o numerze albumu: " + albumNumber);
+            return;
+        } else {
+            JOptionPane.showMessageDialog(null, "Znaleziono studenta:\n" +
+                    "Imię: " + student.getName() + "\n" +
+                    "Nazwisko: " + student.getSurname() + "\n" +
+                    "Numer albumu: " + student.getAlbumNumber() + "\n" +
+                    "Grupa: " + student.getGroupCode());
+        }
+    }
+
 }

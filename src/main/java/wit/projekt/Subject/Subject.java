@@ -24,6 +24,19 @@ public class Subject {
         this.name = name;
     }
 
+    public Integer getGrade(String grade) {
+        switch (grade) {
+            case "Third":
+                return thirdGrade;
+            case "Fourth":
+                return fourthGrade;
+            case "Fith":
+                return fithGrade;
+            default:
+                return 0;
+        }
+    }
+
     public void editCriterion(String grade, int newMaxPoints) {
         switch (grade) {
             case "Third":
@@ -74,49 +87,3 @@ public class Subject {
     }
 }
 
-class SubjectRegistry {
-    List<Subject> subjects = new ArrayList<>();
-
-    // TODO: add subjects from database
-    public SubjectRegistry() {
-        Subject java = new Subject("Java Language", 50, 30, 10);
-        subjects.add(java);
-
-        Subject math = new Subject("Mathematics", 40, 30, 20);
-        subjects.add(math);
-    }
-
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void addSubject(Subject subject) {
-        subjects.add(subject);
-    }
-
-    public Subject editSubject(String name, String newName, int newThirdGrade, int newFourthGrade, int newFithGrade) {
-        for (Subject subject : subjects) {
-            if (subject.getName().equals(name)) {
-                subject.setName(newName);
-                subject.editCriterion("Third", newThirdGrade);
-                subject.editCriterion("Fourth", newFourthGrade);
-                subject.editCriterion("Fith", newFithGrade);
-                return subject;
-            }
-        }
-        return null;
-    }
-
-    public void deleteSubject(String name) {
-        subjects.removeIf(subject -> subject.getName().equals(name));
-    }
-
-    public Subject getSubjectByName(String name) {
-        for (Subject subject : subjects) {
-            if (subject.getName().equals(name)) {
-                return subject;
-            }
-        }
-        return null;
-    }
-}

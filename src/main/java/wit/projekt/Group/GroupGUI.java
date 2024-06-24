@@ -11,12 +11,14 @@ import java.awt.event.ActionEvent;
 
 public class GroupGUI extends PaneController {
 
-    private GroupRegistry groupRegistry = new GroupRegistry();
-    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
+    private GroupRegistry groupRegistry;
+    private StudentRegistry studentRegistry;
     private StudentGUI studentGUI;
 
-    public GroupGUI(String name, StudentGUI studentGUI) {
-        super(name, new String[] { "groupCode", "specialization", "description" });
+    public GroupGUI(String name, GroupRegistry groupRegistry, StudentRegistry studentRegistry, StudentGUI studentGUI) {
+        super(name, new String[]{"groupCode", "specialization", "description"});
+        this.groupRegistry = groupRegistry;
+        this.studentRegistry = studentRegistry;
         this.studentGUI = studentGUI;
 
         for (Group group : groupRegistry.getGroups()) {

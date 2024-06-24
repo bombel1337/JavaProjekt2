@@ -7,17 +7,15 @@ import java.awt.event.*;
 import java.util.*;
 
 public abstract class PaneController implements ActionListener {
-    private JPanel panel = new JPanel();
-
-    private JPanel fieldPanel = new JPanel();
+    private final JPanel fieldPanel = new JPanel();
     protected JPanel buttonPanel = new JPanel();
-    private JPanel tablePanel = new JPanel();
 
     protected JTable table = new JTable();
     protected int selectedRow = -1;
     protected HashMap<String, JTextField> fields = new HashMap<>();
 
     protected PaneController(String name, String[] cols) {
+        JPanel tablePanel = new JPanel();
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = createTable(cols);
         tablePanel.add(scrollPane);
@@ -43,6 +41,7 @@ public abstract class PaneController implements ActionListener {
         JButton addButton = createButton("addButton", getButtonNamesFromID("addButton"));
         fieldPanel.add(addButton);
 
+        JPanel panel = new JPanel();
         panel.add(tablePanel);
         panel.add(fieldPanel);
 

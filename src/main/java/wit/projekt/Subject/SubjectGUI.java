@@ -6,10 +6,12 @@ import javax.swing.*;
 
 public class SubjectGUI extends PaneController {
 
-    private SubjectRegistry subjectRegistry = new SubjectRegistry();
+    private SubjectRegistry subjectRegistry;
 
-    public SubjectGUI(String name) {
+    public SubjectGUI(String name, SubjectRegistry subjectRegistry) {
         super(name, new String[] { "name", "thirdGrade", "fourthGrade", "fithGrade" });
+
+        this.subjectRegistry = subjectRegistry;
 
         for (Subject subject : subjectRegistry.getSubjects()) {
             addFieldToTable(subject.getFields());

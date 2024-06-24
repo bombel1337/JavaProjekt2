@@ -11,11 +11,16 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class StudentGUI extends PaneController {
-    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
-    private GroupRegistry groupRegistry = new GroupRegistry();
 
-    public StudentGUI(String name) {
-        super(name, new String[] { "name", "surname", "albumNumber", "groupCode" });
+    private StudentRegistry studentRegistry ;
+    private GroupRegistry groupRegistry;
+
+    public StudentGUI(String name, StudentRegistry studentRegistry, GroupRegistry groupRegistry) {
+        super(name, new String[]{"name", "surname", "albumNumber", "groupCode"});
+        this.studentRegistry = studentRegistry;
+        this.groupRegistry = groupRegistry;
+
+        System.out.println("StudentGUI");
 
         for (Student student : studentRegistry.getStudents()) {
             addFieldToTable(student.getFields());

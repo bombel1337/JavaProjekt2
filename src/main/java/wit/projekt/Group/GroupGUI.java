@@ -10,12 +10,14 @@ import java.awt.event.ActionEvent;
 
 public class GroupGUI extends PaneController {
 
-    private GroupRegistry groupRegistry = new GroupRegistry();
-    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
+    private GroupRegistry groupRegistry;
+    private StudentRegistry studentRegistry;
     private StudentGUI studentGUI;
 
-    public GroupGUI(String name, StudentGUI studentGUI) {
+    public GroupGUI(String name, GroupRegistry groupRegistry, StudentRegistry studentRegistry, StudentGUI studentGUI) {
         super(name, new String[]{"groupCode", "specialization", "description"});
+        this.groupRegistry = groupRegistry;
+        this.studentRegistry = studentRegistry;
         this.studentGUI = studentGUI;
 
         for (Group group : groupRegistry.getGroups()) {
@@ -47,6 +49,12 @@ public class GroupGUI extends PaneController {
 
         JButton deleteButton = createButton("deleteButton", "Usuń grupę");
         buttonPanel.add(deleteButton);
+
+        JButton editButton = createButton("editButton", "Edytuj grupę");
+        buttonPanel.add(editButton);
+
+        JButton searchButton = createButton("searchButton", "Szukaj ucznia");
+        buttonPanel.add(searchButton);
     }
 
     @Override
@@ -58,8 +66,6 @@ public class GroupGUI extends PaneController {
                 return "Specjalizacja";
             case "description":
                 return "Opis";
-            case "studentAlbumNumber":
-                return "Numer albumu studenta";
             default:
                 return "";
         }
@@ -76,6 +82,8 @@ public class GroupGUI extends PaneController {
                 return "Przypisz studenta";
             case "unassignButton":
                 return "Usuń przypisanie";
+            case "searchButton":
+                return "Szukaj grupę";
             default:
                 return "";
         }
@@ -165,6 +173,53 @@ public class GroupGUI extends PaneController {
             } else {
                 JOptionPane.showMessageDialog(null, "Nie znaleziono grupy lub studenta");
             }
+        }
+
+        if (e.getActionCommand().equals("editButton")) {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano grupy do edycji");
+                return;
+            }
+
+            String oldGroupCode = table.getValueAt(selectedRow, 0).toString();
+
+            String groupCode = fields.get("groupCode").getText();
+            String specialization = fields.get("specialization").getText();
+            String description = fields.get("description").getText();
+
+            if (groupCode.isEmpty() || specialization.isEmpty() || description.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
+                return;
+            }
+
+            Group group = new Group(groupCode, specialization, description);
+
+            groupRegistry.editGroup(oldGroupCode, group);
+            editRow(group.getFields(), selectedRow);
+        }
+
+        if (e.getActionCommand().equals("searchButton")) {
+            String groupCode = fields.get("groupCode").getText();
+            if (!groupCode.isEmpty()) {
+                searchGroup(groupCode);
+            } else {
+                JOptionPane.showMessageDialog(null, "Wprowadź nazwę grupy do wyszukania.");
+            }
+        }
+
+    }
+
+    private void searchGroup(String groupCode) {
+        Group group = groupRegistry.getGroupByCode(groupCode);
+
+        if (group == null) {
+            JOptionPane.showMessageDialog(null, "Nie znaleziono grupy o nazwie: " + groupCode);
+            return;
+        } else {
+            JOptionPane.showMessageDialog(null, "Znaleziono grupę:\n" +
+                    "Nazwa: " + group.getGroupCode() + "\n" +
+                    "Specjalizacja: " + group.getSpecialization() + "\n" +
+                    "Opis: " + group.getDescription());
         }
     }
 }

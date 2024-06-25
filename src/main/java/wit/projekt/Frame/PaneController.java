@@ -25,7 +25,9 @@ public abstract class PaneController extends JPanel implements ActionListener {
                 selectedRow = table.getSelectedRow();
                 if (selectedRow >= 0) {
                     for (String key : fields.keySet()) {
-                        fields.get(key).setText(table.getValueAt(selectedRow, model.findColumn(key)).toString());
+                        if (model.findColumn(key) != -1) {
+                            fields.get(key).setText(table.getValueAt(selectedRow, model.findColumn(key)).toString());
+                        }
                     }
                 }
             }

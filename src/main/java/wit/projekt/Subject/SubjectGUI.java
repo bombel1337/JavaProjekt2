@@ -10,12 +10,14 @@ import java.awt.event.ActionEvent;
 
 public class SubjectGUI extends PaneController {
 
-    private SubjectRegistry subjectRegistry = new SubjectRegistry();
+    private SubjectRegistry subjectRegistry;
     private StudentGUI studentGUI;
-    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
+    private StudentRegistry studentRegistry;
 
-    public SubjectGUI(String name, StudentGUI studentGUI) {
+    public SubjectGUI(String name, SubjectRegistry subjectRegistry, StudentRegistry studentRegistry, StudentGUI studentGUI) {
         super(name, new String[]{"code", "name"});
+        this.subjectRegistry = subjectRegistry;
+        this.studentRegistry = studentRegistry;
         this.studentGUI = studentGUI;
 
         for (Subject subject : subjectRegistry.getSubjects()) {
@@ -49,6 +51,12 @@ public class SubjectGUI extends PaneController {
 
         JButton addGradeButton = createButton("addGradeButton", "Dodaj ocenę");
         fieldPanel.add(addGradeButton);
+
+        JButton editButton = createButton("editButton", "Edytuj przedmiot");
+        buttonPanel.add(editButton);
+
+        JButton searchButton = createButton("searchButton", "Szukaj ucznia");
+        buttonPanel.add(searchButton);
     }
 
     @Override
@@ -58,10 +66,6 @@ public class SubjectGUI extends PaneController {
                 return "Kod przedmiotu";
             case "name":
                 return "Nazwa";
-            case "studentAlbumNumber":
-                return "Numer albumu studenta";
-            case "grade":
-                return "Ocena";
             default:
                 return "";
         }
@@ -74,6 +78,8 @@ public class SubjectGUI extends PaneController {
                 return "Dodaj przedmiot";
             case "deleteButton":
                 return "Usuń przedmiot";
+            case "searchButton":
+                return "Szukaj przedmiotu";
             case "addGradeButton":
                 return "Dodaj ocenę";
             default:
@@ -160,6 +166,50 @@ public class SubjectGUI extends PaneController {
             studentGUI.updateStudentGrade(studentAlbumNumber, subjectCode, grade);
 
             JOptionPane.showMessageDialog(null, "Ocena została dodana pomyślnie");
+        }
+
+        if (e.getActionCommand().equals("editButton")) {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano przedmiotu do edycji");
+                return;
+            }
+
+            String oldCode = table.getValueAt(selectedRow, 0).toString();
+
+            String code = fields.get("code").getText();
+            String name = fields.get("name").getText();
+
+            if (code.isEmpty() || name.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Kod i nazwa przedmiotu muszą być wypełnione");
+                return;
+            }
+
+            Subject subject = new Subject(code, name);
+            subjectRegistry.editSubject(oldCode, subject);
+            editRow(subject.getFields(), selectedRow);
+
+        }
+
+        if (e.getActionCommand().equals("searchButton")) {
+            String code = fields.get("code").getText();
+            if (!code.isEmpty()) {
+                searchSubject(code);
+            } else {
+                JOptionPane.showMessageDialog(null, "Wprowadź nazwę przedmiotu do wyszukania.");
+            }
+        }
+    }
+
+
+    public void searchSubject(String code) {
+        Subject subject = subjectRegistry.getSubjectByCode(code);
+        if (subject != null) {
+            JOptionPane.showMessageDialog(null, "Znaleziono przedmiot:\n" +
+                    "Nazwa: " + subject.getName() + "\n" +
+                    "Kod: " + subject.getCode());
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Nie znaleziono przedmiotu o nazwie: " + code);
         }
     }
 }

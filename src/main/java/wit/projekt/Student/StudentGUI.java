@@ -12,12 +12,14 @@ import java.util.List;
 
 public class StudentGUI extends PaneController {
 
-    private StudentRegistry studentRegistry = StudentRegistry.getInstance();
-    private GroupRegistry groupRegistry = new GroupRegistry();
-    private SubjectRegistry subjectRegistry = new SubjectRegistry();
+    private StudentRegistry studentRegistry;
+    private GroupRegistry groupRegistry;
 
-    public StudentGUI(String name) {
+    public StudentGUI(String name, StudentRegistry studentRegistry, GroupRegistry groupRegistry, SubjectRegistry subjectRegistry) {
         super(name, new String[]{"name", "surname", "albumNumber", "group"});
+
+        this.studentRegistry = studentRegistry;
+        this.groupRegistry = groupRegistry;
 
         List<Subject> subjects = subjectRegistry.getSubjects();
         for (Subject subject : subjects) {
@@ -49,6 +51,12 @@ public class StudentGUI extends PaneController {
 
         JButton deleteButton = createButton("deleteButton", "Usuń ucznia");
         buttonPanel.add(deleteButton);
+
+        JButton editButton = createButton("editButton", "Edytuj ucznia");
+        buttonPanel.add(editButton);
+
+        JButton searchButton = createButton("searchButton", "Szukaj ucznia");
+        buttonPanel.add(searchButton);
     }
 
     @Override
@@ -74,6 +82,8 @@ public class StudentGUI extends PaneController {
                 return "Dodaj ucznia";
             case "deleteButton":
                 return "Usuń ucznia";
+            case "searchButton":
+                return "Szukaj ucznia";
             default:
                 return "";
         }
@@ -119,6 +129,45 @@ public class StudentGUI extends PaneController {
         }
     }
 
+        if (e.getActionCommand().equals(("editButton"))) {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(null, "Nie wybrano ucznia do edycji");
+                return;
+            }
+
+            String oldAlbumNumber = table.getValueAt(selectedRow, 2).toString();
+
+            String name = fields.get("name").getText();
+            String surname = fields.get("surname").getText();
+            String albumNumber = fields.get("albumNumber").getText();
+            String groupCode = fields.get("group").getText();
+
+            if (name.isEmpty() || surname.isEmpty() || albumNumber.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być wypełnione");
+                return;
+            }
+
+            Student student = new Student(name, surname, albumNumber);
+            Group group = groupRegistry.getGroupByCode(groupCode);
+
+            if (group != null) {
+                group.addStudent(student);
+            }
+
+            studentRegistry.editStudent(oldAlbumNumber, student);
+            editRow(student.getFields(), selectedRow);
+        }
+
+        if (e.getActionCommand().equals("searchButton")) {
+            String albumNumber = fields.get("albumNumber").getText();
+            if (!albumNumber.isEmpty()) {
+                searchStudent(albumNumber);
+            } else {
+                JOptionPane.showMessageDialog(null, "Wprowadź numer albumu studenta do wyszukania.");
+            }
+        }
+    }
+
     public void refreshTable() {
         model.setRowCount(0);
         for (Student student : studentRegistry.getStudents()) {
@@ -148,5 +197,22 @@ public class StudentGUI extends PaneController {
                 break;
             }
         }
+
     }
+
+    public void searchStudent(String albumNumber) {
+        Student student = studentRegistry.getStudentByAlbumNumber(albumNumber);
+
+        if (student == null) {
+            JOptionPane.showMessageDialog(null, "Nie znaleziono studenta o numerze albumu: " + albumNumber);
+            return;
+        } else {
+            JOptionPane.showMessageDialog(null, "Znaleziono studenta:\n" +
+                    "Imię: " + student.getName() + "\n" +
+                    "Nazwisko: " + student.getSurname() + "\n" +
+                    "Numer albumu: " + student.getAlbumNumber() + "\n" +
+                    "Grupa: " + student.getGroupCode());
+        }
+    }
+
 }

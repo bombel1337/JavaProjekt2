@@ -1,5 +1,6 @@
 package wit.projekt.Student;
 
+import wit.projekt.Database.Database;
 import wit.projekt.Group.Group;
 
 import javax.swing.*;
@@ -7,20 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentRegistry {
-    private static StudentRegistry instance;
     private List<Student> students;
 
-    private StudentRegistry() {
+    public StudentRegistry(List<String> data) {
         students = new ArrayList<>();
-        students.add(new Student("Jan", "Kowalski", "123456"));
-        students.add(new Student("Adam", "Nowak", "654321"));
-    }
-
-    public static StudentRegistry getInstance() {
-        if (instance == null) {
-            instance = new StudentRegistry();
+        if (!data.isEmpty()) {
+            for (int i = 0; i < data.size(); i += 3) {
+                students.add(new Student(data.get(i), data.get(i + 1), data.get(i + 2)));
+            }
         }
-        return instance;
+        //students.add(new Student("Jan", "Kowalski", "123456"));
+        //students.add(new Student("Adam", "Nowak", "654321"));
     }
 
     public List<Student> getStudents() {
@@ -32,12 +30,15 @@ public class StudentRegistry {
         JOptionPane.showMessageDialog(null, "Dodano studenta: " + student.getName() + " " + student.getSurname());
     }
 
-    public Student editStudent(String albumNumber, String newName, String newSurname) {
+    public Student editStudent(String albumNumber, Student newStudent) {
         for (Student student : students) {
             if (student.getAlbumNumber().equals(albumNumber)) {
-                student.setName(newName);
-                student.setSurname(newSurname);
-                JOptionPane.showMessageDialog(null, "Zaktualizowano dane studenta: " + student.getName() + " " + student.getSurname());
+                deleteStudent(albumNumber);
+                students.add(newStudent);
+
+                JOptionPane.showMessageDialog(null,
+                        "Zaktualizowano dane studenta: " + student.getName() + " " + student.getSurname() + " "
+                                + student.getAlbumNumber());
                 return student;
             }
         }
@@ -58,12 +59,14 @@ public class StudentRegistry {
     }
 
     public void assignGroupToStudent(Student student, Group group) {
-        System.out.println("Assigning group " + (group != null ? group.getGroupCode() : "null") + " to student " + student.getAlbumNumber());
+        System.out.println("Assigning group " + (group != null ? group.getGroupCode() : "null") + " to student "
+                + student.getAlbumNumber());
         for (Student s : students) {
             if (s.getAlbumNumber().equals(student.getAlbumNumber())) {
                 s.setGroup(group);
                 System.out.println("Student " + s.getAlbumNumber() + " group set to " + s.getGroupCode());
-                JOptionPane.showMessageDialog(null, "Zaktualizowano grupę studenta: " + s.getName() + " " + s.getSurname() + " na grupę " + (group != null ? group.getGroupCode() : "Brak grupy"));
+                JOptionPane.showMessageDialog(null, "Zaktualizowano grupę studenta: " + s.getName() + " "
+                        + s.getSurname() + " na grupę " + (group != null ? group.getGroupCode() : "Brak grupy"));
                 break;
             }
         }
@@ -71,5 +74,16 @@ public class StudentRegistry {
         for (Student s : students) {
             System.out.println(s.getFields());
         }
+    }
+
+    public void saveDataToDB() {
+        List<String> data = new ArrayList<>();
+        for (Student student : students) {
+            data.add(student.getName());
+            data.add(student.getSurname());
+            data.add(student.getAlbumNumber());
+            data.add(student.getGroupCode());
+        }
+        Database.save("students", data);
     }
 }

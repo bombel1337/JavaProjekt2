@@ -74,7 +74,6 @@ public class Student {
         fields.add(surname);
         fields.add(albumNumber);
         fields.add(getGroupCode());
-        // Add grades to fields if needed
         return fields;
     }
 }

@@ -16,13 +16,7 @@ public class Database {
     }
 
     public List<String> get(String tableName) {
-        List<String> data = new ArrayList<>();
-
-        if (tables.containsKey(tableName)) {
-            data = tables.get(tableName);
-        }
-
-        return data;
+        return tables.getOrDefault(tableName, new ArrayList<>());
     }
 
     public static void save(String tableName, List<String> data) {
@@ -36,10 +30,11 @@ public class Database {
             if (Files.notExists(Paths.get(path))) {
                 System.out.println("File not found: " + path);
             } else {
-                try (DataInputStream dis = new DataInputStream(new FileInputStream(path))) {
-                    while (dis.available() > 0) {
+                try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
                         System.out.println("Reading from file: " + path);
-                        tables.get(tableName).add(dis.readUTF());
+                        tables.get(tableName).add(line);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -61,16 +56,14 @@ public class Database {
                 }
             }
 
-            try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(path))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
                 for (String line : tables.get(tableName)) {
-                    dos.writeUTF(line);
+                    bw.write(line);
+                    bw.newLine();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-
     }
-
 }

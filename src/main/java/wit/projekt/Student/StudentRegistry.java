@@ -12,9 +12,11 @@ public class StudentRegistry {
 
     public StudentRegistry(List<String> data) {
         students = new ArrayList<>();
+        
         if (!data.isEmpty()) {
-            for (int i = 0; i < data.size(); i += 3) {
-                students.add(new Student(data.get(i), data.get(i + 1), data.get(i + 2)));
+            for (int i = 0; i < data.size(); i += 4) {
+                Student student = new Student(data.get(i), data.get(i + 1), data.get(i + 2));
+                students.add(student);
             }
         }
         //students.add(new Student("Jan", "Kowalski", "123456"));

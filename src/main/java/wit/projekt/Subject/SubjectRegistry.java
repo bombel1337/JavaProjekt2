@@ -9,7 +9,7 @@ public class SubjectRegistry {
     private List<Subject> subjects = new ArrayList<>();
 
     public SubjectRegistry(List<String> data) {
-        if (data.size() > 0) {
+        if (!data.isEmpty()) {
             for (int i = 0; i < data.size(); i += 2) {
                 subjects.add(new Subject(data.get(i), data.get(i + 1)));
             }

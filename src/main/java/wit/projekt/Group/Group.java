@@ -60,8 +60,8 @@ public class Group {
         }
     }
 
-    public ArrayList<String> getFields() {
-        ArrayList<String> fields = new ArrayList<>();
+    public ArrayList<Object> getFields() {
+        ArrayList<Object> fields = new ArrayList<>();
         fields.add(groupCode);
         fields.add(specialization);
         fields.add(description);

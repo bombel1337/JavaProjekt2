@@ -1,21 +1,22 @@
 package wit.projekt.Subject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Subject {
-    String name;
-    Integer thirdGrade;
-    Integer fourthGrade;
-    Integer fithGrade;
+    private String code;
+    private String name;
 
-    public Subject(String name, Integer thirdGrade, Integer fourthGrade, Integer fithGrade) {
+    public Subject(String code, String name) {
+        this.code = code;
         this.name = name;
-        this.thirdGrade = thirdGrade;
-        this.fourthGrade = thirdGrade + fourthGrade;
-        this.fithGrade = thirdGrade + fourthGrade + fithGrade;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -26,78 +27,10 @@ public class Subject {
         this.name = name;
     }
 
-    public void editCriterion(String grade, int newMaxPoints) {
-        switch (grade) {
-            case "Third":
-                thirdGrade = newMaxPoints;
-                break;
-            case "Fourth":
-                fourthGrade = newMaxPoints;
-                break;
-            case "Fith":
-                fithGrade = newMaxPoints;
-                break;
-        }
-    }
-
-    public void removeCriterion(String grade) {
-        switch (grade) {
-            case "Third":
-                thirdGrade = 0;
-                break;
-            case "Fourth":
-                fourthGrade = 0;
-                break;
-            case "Fith":
-                fithGrade = 0;
-                break;
-        }
-    }
-
-    public ArrayList<String> getFields() {
-        ArrayList<String> fields = new ArrayList<>();
+    public ArrayList<Object> getFields() {
+        ArrayList<Object> fields = new ArrayList<>();
+        fields.add(code);
         fields.add(name);
-        fields.add(thirdGrade.toString());
-        fields.add(fourthGrade.toString());
-        fields.add(fithGrade.toString());
         return fields;
-    }
-}
-
-class SubjectRegistry {
-    List<Subject> subjects = new ArrayList<>();
-
-    // TODO: add subjects from database
-    public SubjectRegistry() {
-        Subject java = new Subject("Java Language", 50, 30, 10);
-        subjects.add(java);
-
-        Subject math = new Subject("Mathematics", 40, 30, 20);
-        subjects.add(math);
-    }
-
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void addSubject(Subject subject) {
-        subjects.add(subject);
-    }
-
-    public Subject editSubject(String name, String newName, int newThirdGrade, int newFourthGrade, int newFithGrade) {
-        for (Subject subject : subjects) {
-            if (subject.getName().equals(name)) {
-                subject.setName(newName);
-                subject.editCriterion("Third", newThirdGrade);
-                subject.editCriterion("Fourth", newThirdGrade + newFourthGrade + newFourthGrade);
-                subject.editCriterion("Fith", newThirdGrade + newFourthGrade + newFithGrade);
-                return subject;
-            }
-        }
-        return null;
-    }
-
-    public void deleteSubject(String name) {
-        subjects.removeIf(subject -> subject.getName().equals(name));
     }
 }

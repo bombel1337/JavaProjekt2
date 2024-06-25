@@ -6,27 +6,22 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class Frame {
-    private static JFrame frame;
-    private static JTabbedPane tabbedPane = new JTabbedPane();
+public class Frame extends JFrame {
+    private JTabbedPane tabbedPane = new JTabbedPane();
 
     public Frame() {
-        frame = new JFrame("Dziennik elektroniczny");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(100, 100, 800, 600);
+        setTitle("Dziennik elektroniczny");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        //contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        //contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
-        frame.setResizable(false);
-        frame.setVisible(true);
+        add(tabbedPane, BorderLayout.CENTER);
     }
 
-    public static void addPanelToPane(String name, JPanel panel) {
+    public void addPanelToPane(String name, JPanel panel) {
         tabbedPane.addTab(name, panel);
-        frame.add(tabbedPane);
     }
-
 }
 
 

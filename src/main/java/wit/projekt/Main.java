@@ -16,9 +16,9 @@ import java.util.HashMap;
 public class Main {
     static Database database = new Database();
 
-    static StudentRegistry studentRegistry = new StudentRegistry(database.get("Student"));
-    static GroupRegistry groupRegistry = new GroupRegistry(database.get("Group"));
-    static SubjectRegistry subjectRegistry = new SubjectRegistry(database.get("Subject"));
+    static StudentRegistry studentRegistry = new StudentRegistry(database.get("students"));
+    static GroupRegistry groupRegistry = new GroupRegistry(database.get("groups"));
+    static SubjectRegistry subjectRegistry = new SubjectRegistry(database.get("subjects"));
 
     public static void main(String[] args) {
 
@@ -45,5 +45,7 @@ public class Main {
         studentRegistry.saveDataToDB();
         groupRegistry.saveDataToDB();
         subjectRegistry.saveDataToDB();
+
+        database.saveFile();
     }
 }

@@ -16,7 +16,7 @@ public class StudentGUI extends PaneController {
     private GroupRegistry groupRegistry;
 
     public StudentGUI(String name, StudentRegistry studentRegistry, GroupRegistry groupRegistry, SubjectRegistry subjectRegistry) {
-        super(name, new String[]{"name", "surname", "albumNumber", "group"});
+        super(name, new String[]{"Imię", "Nazwisko", "Numer Albumu", "Grupa"});
 
         this.studentRegistry = studentRegistry;
         this.groupRegistry = groupRegistry;
@@ -127,7 +127,6 @@ public class StudentGUI extends PaneController {
             studentRegistry.deleteStudent(albumNumber);
             deleteRow(selectedRow);
         }
-    }
 
         if (e.getActionCommand().equals(("editButton"))) {
             if (selectedRow == -1) {

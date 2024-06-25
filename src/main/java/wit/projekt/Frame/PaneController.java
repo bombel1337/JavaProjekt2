@@ -71,4 +71,13 @@ public abstract class PaneController extends JPanel implements ActionListener {
     protected abstract String getFieldNameFromID(String id);
 
     protected abstract String getButtonNamesFromID(String id);
+
+    // Public getter methods
+    public JTable getTable() {
+        return table;
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
+    }
 }

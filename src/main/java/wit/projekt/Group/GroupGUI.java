@@ -15,7 +15,7 @@ public class GroupGUI extends PaneController {
     private StudentGUI studentGUI;
 
     public GroupGUI(String name, GroupRegistry groupRegistry, StudentRegistry studentRegistry, StudentGUI studentGUI) {
-        super(name, new String[]{"groupCode", "specialization", "description"});
+        super(name, new String[]{"Kod Grupy", "Specjalizacja", "Opis"});
         this.groupRegistry = groupRegistry;
         this.studentRegistry = studentRegistry;
         this.studentGUI = studentGUI;

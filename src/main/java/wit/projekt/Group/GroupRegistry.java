@@ -9,10 +9,12 @@ public class GroupRegistry {
     private List<Group> groups = new ArrayList<>();
 
     public GroupRegistry(List<String> data) {
-        if (!data.isEmpty()) {
-            for (String line : data) {
-                String[] parts = line.split(";");
+        for (String line : data) {
+            String[] parts = line.split(";");
+            if (parts.length >= 3) {  // Ensure there are enough parts to avoid ArrayIndexOutOfBoundsException
                 groups.add(new Group(parts[0], parts[1], parts[2]));
+            } else {
+                System.err.println("Invalid group data: " + line);
             }
         }
     }

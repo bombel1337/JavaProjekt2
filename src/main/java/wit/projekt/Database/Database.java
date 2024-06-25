@@ -30,12 +30,13 @@ public class Database {
             if (Files.notExists(Paths.get(path))) {
                 System.out.println("File not found: " + path);
             } else {
-                try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        System.out.println("Reading from file: " + path);
-                        tables.get(tableName).add(line);
+                try (DataInputStream dis = new DataInputStream(new FileInputStream(path))) {
+                    int numberOfEntries = dis.readInt();
+                    List<String> data = new ArrayList<>();
+                    for (int i = 0; i < numberOfEntries; i++) {
+                        data.add(dis.readUTF());
                     }
+                    tables.put(tableName, data);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -56,10 +57,11 @@ public class Database {
                 }
             }
 
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
-                for (String line : tables.get(tableName)) {
-                    bw.write(line);
-                    bw.newLine();
+            try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(path))) {
+                List<String> data = tables.get(tableName);
+                dos.writeInt(data.size());
+                for (String line : data) {
+                    dos.writeUTF(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

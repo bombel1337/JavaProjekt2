@@ -16,6 +16,7 @@ public class StudentRegistry {
         if (!data.isEmpty()) {
             for (int i = 0; i < data.size(); i += 4) {
                 Student student = new Student(data.get(i), data.get(i + 1), data.get(i + 2));
+                // Assuming data for grades will be added here
                 students.add(student);
             }
         }
@@ -35,6 +36,8 @@ public class StudentRegistry {
     public Student editStudent(String albumNumber, Student newStudent) {
         for (Student student : students) {
             if (student.getAlbumNumber().equals(albumNumber)) {
+                // Retain existing grades
+                newStudent.getAllGrades().putAll(student.getAllGrades());
                 deleteStudent(albumNumber);
                 students.add(newStudent);
 
@@ -85,6 +88,7 @@ public class StudentRegistry {
             data.add(student.getSurname());
             data.add(student.getAlbumNumber());
             data.add(student.getGroupCode());
+            // Assuming data for grades will be added here
         }
         Database.save("students", data);
     }

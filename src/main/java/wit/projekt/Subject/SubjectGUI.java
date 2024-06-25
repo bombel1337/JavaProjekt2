@@ -15,7 +15,7 @@ public class SubjectGUI extends PaneController {
     private StudentRegistry studentRegistry;
 
     public SubjectGUI(String name, SubjectRegistry subjectRegistry, StudentRegistry studentRegistry, StudentGUI studentGUI) {
-        super(name, new String[]{"code", "name"});
+        super(name, new String[]{"Kod przedmiotu", "Nazwa przedmiotu"});
         this.subjectRegistry = subjectRegistry;
         this.studentRegistry = studentRegistry;
         this.studentGUI = studentGUI;

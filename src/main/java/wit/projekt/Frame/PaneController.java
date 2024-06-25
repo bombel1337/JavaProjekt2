@@ -4,28 +4,53 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class PaneController extends JPanel implements ActionListener {
     protected JPanel fieldPanel = new JPanel();
     protected JPanel buttonPanel = new JPanel();
-    protected JTable table = new JTable();
+    protected JTable table;
     protected DefaultTableModel model;
     protected HashMap<String, JTextField> fields = new HashMap<>();
     protected int selectedRow = -1;
 
     protected PaneController(String name, String[] columnNames) {
         setLayout(new BorderLayout());
-        model = new DefaultTableModel(columnNames, 0);
-        table.setModel(model);
+        model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return true; // Allow editing of all cells
+            }
+        };
+
+        table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 selectedRow = table.getSelectedRow();
-                if (selectedRow >= 0) {
+                if (selectedRow >= 0) { // Ensure selectedRow is valid
                     for (String key : fields.keySet()) {
-                        fields.get(key).setText(table.getValueAt(selectedRow, model.findColumn(key)).toString());
+                        int columnIndex = model.findColumn(key);
+                        if (columnIndex >= 0) {
+                            fields.get(key).setText(table.getValueAt(selectedRow, columnIndex).toString());
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add double-click listener for editing cells
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = table.rowAtPoint(e.getPoint());
+                    int col = table.columnAtPoint(e.getPoint());
+                    if (row >= 0 && col >= 0) {
+                        table.editCellAt(row, col);
                     }
                 }
             }
